@@ -1,0 +1,80 @@
+Parameters:
+  ECSTaskName:
+    Description: TaskName
+    Type: String
+    Default: "nginx"
+  ECSClusterName:
+    Description: ClusterName
+    Type: String
+    Default: "ecs-cluster"
+  NotificationSNSTopic:
+    Description: SNSTopic
+    Type: String
+    Default: "arn:aws:sns:ap-south-1:0000000000:myalert"
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "CW ALARM"
+Resources:
+  cloudWatchHighCPUAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      MetricName: CpuUtilized
+      Namespace: ECS/ContainerInsights
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      EvaluationPeriods: '1'
+      Period: '180'
+      Statistic: Average
+      Threshold: '80'
+      ActionsEnabled: 'true'
+      AlarmActions:
+      - Ref: NotificationSNSTopic
+      Dimensions:
+      - Name: ServiceName
+        Value: !Ref ECSTaskName
+      - Name: ClusterName
+        Value: !Ref ECSClusterName
+      - Name: TaskDefinitionFamily
+        Value: !Ref ECSTaskName 
+      AlarmDescription: High CPU usage by !Ref ECSTaskName Service.
+      AlarmName: !Sub ${ECSTaskName}-CpuUtilized
+  cloudWatchHighMemoryAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      MetricName: MemoryUtilized
+      Namespace: ECS/ContainerInsights
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      EvaluationPeriods: '1'
+      Period: '180'
+      Statistic: Average
+      Threshold: '80'
+      ActionsEnabled: 'true'
+      AlarmActions:
+      - Ref: NotificationSNSTopic
+      Dimensions:
+      - Name: ServiceName
+        Value: !Ref ECSTaskName
+      - Name: ClusterName
+        Value: !Ref ECSClusterName
+      - Name: TaskDefinitionFamily
+        Value: !Ref ECSTaskName  
+      AlarmDescription: High Memory usage by !Ref ECSTaskName Service. 
+      AlarmName: !Sub MemoryUtilized-${ECSTaskName}
+  cloudWatchTaskcountAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      MetricName: RunningTaskCount
+      Namespace: ECS/ContainerInsights
+      ComparisonOperator: LessThanOrEqualToThreshold
+      EvaluationPeriods: '1'
+      Period: '180'
+      Statistic: Sum
+      Threshold: '3'
+      ActionsEnabled: 'true'
+      AlarmActions:
+      - Ref: NotificationSNSTopic
+      Dimensions:
+      - Name: ServiceName
+        Value: !Ref ECSTaskName
+      - Name: ClusterName
+        Value: !Ref ECSClusterName
+      AlarmDescription: Monitors ${ECSTaskName} for <=1 running task
+      AlarmName: !Sub RunningTaskCount-${ECSTaskName}
