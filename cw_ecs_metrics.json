@@ -57,7 +57,7 @@ Resources:
       - Name: TaskDefinitionFamily
         Value: !Ref ECSTaskName  
       AlarmDescription: High Memory usage by !Ref ECSTaskName Service. 
-      AlarmName: !Sub MemoryUtilized-${ECSTaskName}
+      AlarmName: !Sub ${ECSTaskName}-MemoryUtilized
   cloudWatchTaskcountAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -77,4 +77,4 @@ Resources:
       - Name: ClusterName
         Value: !Ref ECSClusterName
       AlarmDescription: Monitors ${ECSTaskName} for <=1 running task
-      AlarmName: !Sub RunningTaskCount-${ECSTaskName}
+      AlarmName: !Sub ${ECSTaskName}-RunningTaskCount
