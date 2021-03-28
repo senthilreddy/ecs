@@ -27,6 +27,8 @@ Resources:
       ActionsEnabled: 'true'
       AlarmActions:
       - Ref: NotificationSNSTopic
+      OKActions:
+      - Ref: NotificationSNSTopic
       Dimensions:
       - Name: ServiceName
         Value: !Ref ECSTaskName
@@ -49,6 +51,8 @@ Resources:
       ActionsEnabled: 'true'
       AlarmActions:
       - Ref: NotificationSNSTopic
+      OKActions:
+      - Ref: NotificationSNSTopic
       Dimensions:
       - Name: ServiceName
         Value: !Ref ECSTaskName
@@ -70,6 +74,8 @@ Resources:
       Threshold: '3'
       ActionsEnabled: 'true'
       AlarmActions:
+      - Ref: NotificationSNSTopic
+      OKActions:
       - Ref: NotificationSNSTopic
       Dimensions:
       - Name: ServiceName
